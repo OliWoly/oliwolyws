@@ -1,3 +1,42 @@
+:root {
+  --navBarHeight: 5em;
+
+
+  --bgColour: #FDFFF7;
+  --navBarColour: #e34a6f;
+  --navBarButtonColour: blue;
+  --navBarButtonHoverColour: lightblue;
+  --textColour: #50514F;
+}
+
 body {
-    background-color: aqua;
+    background-color: var(--bgColour);
+    color: var(--textColour);
+}
+
+
+nav {
+    background-color: var(--navBarColour);
+    width: 100%;
+    height: var(--navBarHeight);
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding: 2em;
+}
+
+.navigationBarSub {
+    background-color: var(--navBarButtonColour);
+    width: 10em;
+    padding-top: calc(var(--navBarHeight) / 2.5);
+    height: auto;
+    text-align: center;
+    margin-right: 1em;
+    margin-left: 1em;
+}
+
+.navigationBarSub:hover {
+    background-color: var(--navBarButtonHoverColour);
+    cursor: pointer;
 }
