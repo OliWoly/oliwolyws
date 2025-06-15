@@ -4,6 +4,9 @@
 }
 
 * {
+    margin: 0;
+    padding: 0;
+
     font-family: Proto;
     background-color: var(--bgColour);
 }
@@ -61,10 +64,13 @@ h1 {
 }
 
 .logoHeader {
+    display: flex;
     font-size: 3em;
     font-style: italic;
     text-decoration: underline;
     background-color: var(--bgColourHeader);
+    justify-content: center;
+    align-items: center;
 }
 
 .logoHeader p {
@@ -102,19 +108,11 @@ nav {
     height: 2em;
 }
 
-#homeNav{
+#homeNav, #projectsNav, #educationNav, #contactNav{
     position:relative;
-    top:0em;
 }
-#projectsNav{
+
+#logoNav{
     position:relative;
-    top:0em;
-}
-#educationNav{
-    position:relative;
-    top:0em;
-}
-#contactNav{
-    position:relative;
-    top:0em;
+    background-color: var(--bgColourHeader);
 }

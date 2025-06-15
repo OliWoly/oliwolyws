@@ -1,6 +1,7 @@
 // Global Variables
 class NavItem{
     constructor(ID){
+        // Attributes
         this.id = ID;
         this.element = document.getElementById(ID);
         this.offsetX = 0;
@@ -9,6 +10,10 @@ class NavItem{
         this.strength = 30;
         this.angle = 0;
         this.distance = 0;
+
+        // Abilities
+        this.doesMove = true;
+        this.doesChangeColour = false;
     }
 }
 
@@ -24,10 +29,19 @@ class Logic{
 
 
         this.navElements = [];
-        const navIDs = ["homeNav", "projectsNav", "educationNav", "contactNav"];
+        const navIDs = ["homeNav", "projectsNav", "educationNav", "contactNav", "logoNav"];
         for (let i=0; i < navIDs.length; i++){
             this.navElements.push(new NavItem(navIDs[i]));
         }
+
+        // Assign Custom Abilities
+        for (let i=0; i < this.navElements.length; i++){
+            if (this.navElements[i].id == "logoNav"){
+                this.navElements[i].doesChangeColour = true;
+                this.navElements[i].doesMove = false;
+            }
+        }
+
     }
 }
 
@@ -44,34 +58,37 @@ function calculateStrengths(site){
     const upperLimit = 500;
 
     for (let i=0; i < site.navElements.length; i++){
-        
-        // Clamp strength when too far away.
-        if (site.navElements[i].distance >= upperLimit){
-            multiplier = 1;
-        }
+        if (site.navElements[i].doesMove == true){
+            // Clamp strength when too far away.
+            if (site.navElements[i].distance >= upperLimit){
+                multiplier = 1;
+            }
 
-        // Begin Fading under upper bound.
-        else {
-            multiplier = (site.navElements[i].distance / upperLimit);
+            // Begin Fading under upper bound.
+            else {
+                multiplier = (site.navElements[i].distance / upperLimit);
+            }
+            
+            // Apply calculations
+            site.navElements[i].strength = base * multiplier;
         }
-        
-        // Apply calculations
-        site.navElements[i].strength = base * multiplier;
     }  
 }
 
 
 function calculateMoveDistances(site){
     for (let i=0; i < site.navElements.length; i++){
-        // Angle
-        site.navElements[i].angle = 
-        (Math.atan2((site.navElements[i].rect.top + (site.navElements[i].rect.height / 2)) - site.mousePosY,
-        (site.navElements[i].rect.left + (site.navElements[i].rect.width / 2)) - site.mousePosX) * 180) / Math.PI;
-    
-        // Distance
-        site.navElements[i].distance = 
-        Math.sqrt((site.mousePosX - (site.navElements[i].rect.left + (site.navElements[i].rect.width / 2))) ** 2 
-        + (site.mousePosY - (site.navElements[i].rect.top + (site.navElements[i].rect.height / 2))) ** 2);
+        if (site.navElements[i].doesMove == true){
+            // Angle
+            site.navElements[i].angle = 
+            (Math.atan2((site.navElements[i].rect.top + (site.navElements[i].rect.height / 2)) - site.mousePosY,
+            (site.navElements[i].rect.left + (site.navElements[i].rect.width / 2)) - site.mousePosX) * 180) / Math.PI;
+        
+            // Distance
+            site.navElements[i].distance = 
+            Math.sqrt((site.mousePosX - (site.navElements[i].rect.left + (site.navElements[i].rect.width / 2))) ** 2 
+            + (site.mousePosY - (site.navElements[i].rect.top + (site.navElements[i].rect.height / 2))) ** 2);
+        }
     }
 }
 
@@ -82,8 +99,10 @@ function move(site){
     
     // Movement Loop
     for (let i=0; i < site.navElements.length; i++){
-        site.navElements[i].offsetX = (Math.cos(site.navElements[i].angle * Math.PI / 180) * site.navElements[i].strength);
-        site.navElements[i].offsetY = (Math.sin(site.navElements[i].angle * Math.PI / 180) * site.navElements[i].strength);
+        if (site.navElements[i].doesMove == true){
+            site.navElements[i].offsetX = (Math.cos(site.navElements[i].angle * Math.PI / 180) * site.navElements[i].strength);
+            site.navElements[i].offsetY = (Math.sin(site.navElements[i].angle * Math.PI / 180) * site.navElements[i].strength);
+        }
     }
 }
 
