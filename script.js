@@ -2,7 +2,7 @@
 class NavItem{
     constructor(ID){
         this.id = ID;
-        this.element = document.getElementById(toString(ID));
+        this.element = document.getElementById(ID);
         this.offsetX = 0;
         this.offsetY = 0;
         this.rect = this.element.getBoundingClientRect();
@@ -118,6 +118,7 @@ function update(){
 
 console.log(site.navElements.length);
 console.log(site.navElements[0].id)
+console.log(site.navElements[2].rect.height)
 
 // Framerate
 setInterval(update, 4);
