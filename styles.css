@@ -102,7 +102,19 @@ nav {
     height: 2em;
 }
 
-#homeNav {
+#homeNav{
+    position:relative;
+    top:0em;
+}
+#projectsNav{
+    position:relative;
+    top:0em;
+}
+#educationNav{
+    position:relative;
+    top:0em;
+}
+#contactNav{
     position:relative;
     top:0em;
 }
