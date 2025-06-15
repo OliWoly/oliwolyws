@@ -1,0 +1,75 @@
+@font-face {
+    font-family: Proto;
+    src: url(Proto.ttf);
+}
+
+* {
+    font-family: Proto;
+}
+
+:root {
+    --bgColour: #FFEBE7;
+    --txtColour: #1D1D1D;
+    --txtColourLink: #1D1D1D;
+}
+
+a:link {
+  text-decoration: none;
+  color:var(--txtColourLink);
+}
+
+a:visited {
+  text-decoration: none;
+  color:var(--txtColourLink);
+}
+
+a:hover {
+  text-decoration: underline;
+  color:var(--txtColourLink);
+}
+
+a:active {
+  text-decoration: underline;
+  color:var(--txtColourLink);
+}
+
+
+
+.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 10em;
+    width: auto;
+    padding-right: 10%;
+    padding-left: 10%;
+    background-color: var(--bgColour);
+    color:var(--txtColour)
+}
+
+.logoHeader {
+    font-size: 3em;
+    font-style: italic;
+    text-decoration: underline;
+}
+
+nav {
+    display: flex;
+    height: 100%;
+    width: auto;
+    gap:10em;
+
+    flex-direction: row;
+    align-items: center;
+
+    background-color: var(--bgColour);
+}
+
+.navigationBarSub {
+    display:flex;
+    height: 3em;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bgColour);
+}
