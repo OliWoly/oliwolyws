@@ -13,7 +13,7 @@
 
 :root {
     --bgColour: #FFFFFF;
-    --bgColourHeader: #FAF0E9;
+    --bgColourHeader: #FFFFFF;
     --txtColour: #1D1D1D;
     --txtColourLink: #1D1D1D;
 }
@@ -60,7 +60,9 @@ h1 {
     padding-right: 10%;
     padding-left: 10%;
     background-color: var(--bgColourHeader);
-    color:var(--txtColour)
+    color:var(--txtColour);
+
+    box-shadow:10px 10px black;
 }
 
 .logoHeader {

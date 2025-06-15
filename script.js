@@ -6,10 +6,20 @@ class NavItem{
         this.element = document.getElementById(ID);
         this.offsetX = 0;
         this.offsetY = 0;
+
+        // Element Attributes
         this.rect = this.element.getBoundingClientRect();
+        this.style = window.getComputedStyle(this.element);
+
+        // Movement
         this.strength = 30;
         this.angle = 0;
         this.distance = 0;
+
+        // Colour Changes
+        // converts color to usable values.
+        this.baseColour = this.style.color.match(/\d+/g).map(Number);
+        this.targetColour = [...this.baseColour];   // shallow copy
 
         // Abilities
         this.doesMove = true;
@@ -38,7 +48,7 @@ class Logic{
         for (let i=0; i < this.navElements.length; i++){
             if (this.navElements[i].id == "logoNav"){
                 this.navElements[i].doesChangeColour = true;
-                this.navElements[i].doesMove = false;
+                this.navElements[i].doesMove = true;
             }
         }
 
@@ -46,12 +56,52 @@ class Logic{
 }
 
 var site = new Logic();
+changeTargetColours(site, "logoNav", 255, 0, 0);
+console.log(site.navElements[4].baseColour);
+console.log(site.navElements[4].targetColour);
 
 // Handle Mouse Tracking
 document.addEventListener('mousemove', function(event) {
     site.mousePosX = event.clientX;
     site.mousePosY = event.clientY;
 });
+
+function changeTargetColours(site, id, r, g, b){
+    for (let i=0; i < site.navElements.length; i++){
+        if (site.navElements[i].doesChangeColour == true){
+            if (site.navElements[i].id == id){
+                site.navElements[i].targetColour[0] = r;
+                site.navElements[i].targetColour[1] = g;
+                site.navElements[i].targetColour[2] = b;
+            }
+        }
+    }
+}
+
+function getCurrentColour(navElement){
+    var colour = navElement.style.color.match(/\d+/g).map(Number);
+    return colour;
+}
+
+function distanceColour(site){
+    for (let i=0; i < site.navElements.length; i++){
+        if (site.navElements[i].doesChangeColour == true){
+            const upperLimit = 300;
+            // Target Colours
+            let multiplier = 1;
+
+            if (site.navElements[i].distance >= upperLimit){
+                multiplier = 1;
+            }
+            else {
+                multiplier = (site.navElements[i].distance / upperLimit);
+            }
+
+            
+    
+        }
+    }
+}
 
 function calculateStrengths(site){
     const base = 15;
@@ -74,7 +124,6 @@ function calculateStrengths(site){
         }
     }  
 }
-
 
 function calculateMoveDistances(site){
     for (let i=0; i < site.navElements.length; i++){
@@ -114,11 +163,16 @@ function applyMoveToElements(site){
     }  
 }
 
+function apply(site){
+    applyMoveToElements(site);
+}
+
 
 // Update game function.
 function update(){
     move(site);
-    applyMoveToElements(site);
+    apply(site);
+    distanceColour(site);
 }
 
 // Framerate
