@@ -1,8 +1,17 @@
-// Figured out how to make it moe through this.
-//document.getElementById("homeNav").style.top = 3 + "em";
-
-
 // Global Variables
+class NavItem{
+    constructor(ID){
+        this.id = ID;
+        this.element = document.getElementById(toString(ID));
+        this.offsetX = 0;
+        this.offsetY = 0;
+        this.rect = this.element.getBoundingClientRect();
+        this.strength = 0;
+        this.angle = 0;
+        this.distance = 0;
+    }
+}
+
 class Logic{
     constructor(){
         // Site metaStatistics
@@ -13,40 +22,16 @@ class Logic{
         this.centreX = window.innerWidth/2;
         this.centreY = window.innerHeight/2;
 
-        // Position Offsets
-        this.home = document.getElementById("homeNav");
-        this.homeOffX = 0;
-        this.homeOffY = 0;
-        this.homeRect = this.home.getBoundingClientRect();
-        this.homeStrength = 1;
-        this.homeAngle = 0;
-        this.homeDistance = 0;
 
-        this.project = document.getElementById("projectsNav");
-        this.projOffX = 0;
-        this.projOffY = 0;
-        this.projRect = this.project.getBoundingClientRect();
-        this.projStrength = 1;
-        this.projAngle = 0;
-        this.projDistance = 0;
-
-        this.education = document.getElementById("educationNav");
-        this.eduOffX = 0;
-        this.eduOffY = 0;
-        this.eduRect = this.education.getBoundingClientRect();
-        this.eduStrength = 1;
-        this.eduAngle = 0;
-        this.eduDistance = 0;
-
-        this.contact = document.getElementById("contactNav");
-        this.contOffX = 0;
-        this.contOffY = 0;
-        this.contRect = this.contact.getBoundingClientRect();
-        this.contStrength = 1;
-        this.contAngle = 0;
-        this.contDistance = 0;
+        this.navElements = [];
+        const navIDs = ["homeNav", "projectsNav", "educationNav", "contactNav"];
+        for (let i=0; i < navIDs.length; i++){
+            this.navElements.push(new NavItem(navIDs[i]));
+        }
     }
 }
+
+
 
 
 var site = new Logic();
@@ -127,9 +112,12 @@ function applyMoveToElements(site){
 
 // Update game function.
 function update(){
-    move(site);
-    applyMoveToElements(site);
+    //move(site);
+    //applyMoveToElements(site);
 }
+
+console.log(site.navElements.length);
+console.log(site.navElements[0].id)
 
 // Framerate
 setInterval(update, 4);
