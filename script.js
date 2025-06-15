@@ -57,14 +57,22 @@ class Logic{
 
 var site = new Logic();
 changeTargetColours(site, "logoNav", 255, 0, 0);
-console.log(site.navElements[4].baseColour);
-console.log(site.navElements[4].targetColour);
 
 // Handle Mouse Tracking
 document.addEventListener('mousemove', function(event) {
     site.mousePosX = event.clientX;
     site.mousePosY = event.clientY;
 });
+
+function updateBaseColour(site, id){
+    for (let i=0; i < site.navElements.length; i++){
+        if (site.navElements[i].doesChangeColour == true){
+            if (site.navElements[i].id == id){
+                site.navElements[i].baseColour = this.style.color.match(/\d+/g).map(Number);
+            }
+        }
+    }
+}
 
 function changeTargetColours(site, id, r, g, b){
     for (let i=0; i < site.navElements.length; i++){
@@ -87,17 +95,26 @@ function distanceColour(site){
     for (let i=0; i < site.navElements.length; i++){
         if (site.navElements[i].doesChangeColour == true){
             const upperLimit = 300;
-            // Target Colours
             let multiplier = 1;
 
+            // Clamped Value
             if (site.navElements[i].distance >= upperLimit){
                 multiplier = 1;
             }
+            // Get Percentage
             else {
                 multiplier = (site.navElements[i].distance / upperLimit);
             }
 
-            
+            // Colour calculations
+            differences = [];
+            finalColour = [];
+            for (let j=0; j < 3; j++){
+                differences[j] = site.navElements[i].targetColour[j] - site.navElements[i].baseColour[j];
+                finalColour[j] = site.navElements[i].targetColour[j] - (differences[j] * multiplier);
+            }
+
+            site.navElements[i].element.style.color = `rgb(${finalColour[0]}, ${finalColour[1]}, ${finalColour[2]})`;
     
         }
     }
