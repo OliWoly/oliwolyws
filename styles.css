@@ -5,10 +5,12 @@
 
 * {
     font-family: Proto;
+    background-color: var(--bgColour);
 }
 
 :root {
-    --bgColour: #FFEBE7;
+    --bgColour: #FFFFFF;
+    --bgColourHeader: #FAF0E9;
     --txtColour: #1D1D1D;
     --txtColourLink: #1D1D1D;
 }
@@ -33,6 +35,17 @@ a:active {
   color:var(--txtColourLink);
 }
 
+main {
+    max-width: 75ch;       
+    margin: 0 auto;        
+    padding: 0 1em;        
+}
+
+h1 {
+    font-size: 3em;
+}
+
+
 
 
 .header {
@@ -43,7 +56,7 @@ a:active {
     width: auto;
     padding-right: 10%;
     padding-left: 10%;
-    background-color: var(--bgColour);
+    background-color: var(--bgColourHeader);
     color:var(--txtColour)
 }
 
@@ -51,6 +64,11 @@ a:active {
     font-size: 3em;
     font-style: italic;
     text-decoration: underline;
+    background-color: var(--bgColourHeader);
+}
+
+.logoHeader p {
+    background-color: var(--bgColourHeader);
 }
 
 nav {
@@ -62,7 +80,7 @@ nav {
     flex-direction: row;
     align-items: center;
 
-    background-color: var(--bgColour);
+    background-color: var(--bgColourHeader);
 }
 
 .navigationBarSub {
@@ -71,5 +89,20 @@ nav {
     text-align: center;
     align-items: center;
     justify-content: center;
-    background-color: var(--bgColour);
+    background-color: var(--bgColourHeader);
+}
+
+.navigationBarSub a {
+    background-color: var(--bgColourHeader);
+}
+
+.navGradient {
+    background-image: linear-gradient(180deg, var(--bgColourHeader), var(--bgColour));
+    width: 100%;
+    height: 2em;
+}
+
+#homeNav {
+    position:relative;
+    top:0em;
 }
