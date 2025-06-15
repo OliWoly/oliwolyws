@@ -6,7 +6,7 @@ class NavItem{
         this.offsetX = 0;
         this.offsetY = 0;
         this.rect = this.element.getBoundingClientRect();
-        this.strength = 0;
+        this.strength = 30;
         this.angle = 0;
         this.distance = 0;
     }
@@ -31,9 +31,6 @@ class Logic{
     }
 }
 
-
-
-
 var site = new Logic();
 
 // Handle Mouse Tracking
@@ -43,35 +40,39 @@ document.addEventListener('mousemove', function(event) {
 });
 
 function calculateStrengths(site){
-    var base = 10;
-    var upperLimit = 300;
+    const base = 15;
+    const upperLimit = 500;
 
-    if (site.homeDistance >= upperLimit){
-        multiplier = 1;
-    }
-    else{
-        multiplier = (site.homeDistance / upperLimit);
-    }
-    
-    site.homeStrength = base * multiplier;
-    site.projStrength = base;
-    site.eduStrength = base;
-    site.contStrength = base;
+    for (let i=0; i < site.navElements.length; i++){
+        
+        // Clamp strength when too far away.
+        if (site.navElements[i].distance >= upperLimit){
+            multiplier = 1;
+        }
+
+        // Begin Fading under upper bound.
+        else {
+            multiplier = (site.navElements[i].distance / upperLimit);
+        }
+        
+        // Apply calculations
+        site.navElements[i].strength = base * multiplier;
+    }  
 }
 
 
 function calculateMoveDistances(site){
-    site.homeAngle = (Math.atan2((site.homeRect.top + (site.homeRect.height / 2)) - site.mousePosY, (site.homeRect.left + (site.homeRect.width / 2)) - site.mousePosX) * 180) / Math.PI;
-    site.homeDistance = Math.sqrt((site.mousePosX - (site.homeRect.left + (site.homeRect.width / 2))) ** 2 + (site.mousePosY - (site.homeRect.top + (site.homeRect.height / 2))) ** 2);
-
-    site.projAngle = (Math.atan2((site.projRect.top + (site.projRect.height / 2)) - site.mousePosY, (site.projRect.left + (site.projRect.width / 2)) - site.mousePosX) * 180) / Math.PI;
-    site.projDistance = Math.sqrt((site.mousePosX - (site.projRect.left + (site.projRect.width / 2))) ** 2 + (site.mousePosY - (site.projRect.top + (site.projRect.height / 2))) ** 2);
-
-    site.eduAngle = (Math.atan2((site.eduRect.top + (site.eduRect.height / 2)) - site.mousePosY, (site.eduRect.left + (site.eduRect.width / 2)) - site.mousePosX) * 180) / Math.PI;
-    site.eduDistance = Math.sqrt((site.mousePosX - (site.eduRect.left + (site.eduRect.width / 2))) ** 2 + (site.mousePosY - (site.eduRect.top + (site.eduRect.height / 2))) ** 2);
-
-    site.contAngle = (Math.atan2((site.contRect.top + (site.contRect.height / 2)) - site.mousePosY, (site.contRect.left + (site.contRect.width / 2)) - site.mousePosX) * 180) / Math.PI;
-    site.contDistance = Math.sqrt((site.mousePosX - (site.contRect.left + (site.contRect.width / 2))) ** 2 + (site.mousePosY - (site.contRect.top) + (site.contRect.height / 2)) ** 2);
+    for (let i=0; i < site.navElements.length; i++){
+        // Angle
+        site.navElements[i].angle = 
+        (Math.atan2((site.navElements[i].rect.top + (site.navElements[i].rect.height / 2)) - site.mousePosY,
+        (site.navElements[i].rect.left + (site.navElements[i].rect.width / 2)) - site.mousePosX) * 180) / Math.PI;
+    
+        // Distance
+        site.navElements[i].distance = 
+        Math.sqrt((site.mousePosX - (site.navElements[i].rect.left + (site.navElements[i].rect.width / 2))) ** 2 
+        + (site.mousePosY - (site.navElements[i].rect.top + (site.navElements[i].rect.height / 2))) ** 2);
+    }
 }
 
 // Actually calculate the movements of the text.
@@ -79,46 +80,27 @@ function move(site){
     calculateMoveDistances(site);
     calculateStrengths(site);
     
-
-    site.homeOffX = (Math.cos(site.homeAngle * Math.PI / 180) * site.homeStrength);
-    site.homeOffY = (Math.sin(site.homeAngle * Math.PI / 180) * site.homeStrength);
-
-    site.projOffX = (Math.cos(site.projAngle * Math.PI / 180) * site.projStrength);
-    site.projOffY = (Math.sin(site.projAngle * Math.PI / 180) * site.projStrength);
-
-    site.eduOffX = (Math.cos(site.eduAngle * Math.PI / 180) * site.eduStrength);
-    site.eduOffY = (Math.sin(site.eduAngle * Math.PI / 180) * site.eduStrength);
-
-    site.contOffX = (Math.cos(site.contAngle * Math.PI / 180) * site.contStrength);
-    site.contOffY = (Math.sin(site.contAngle * Math.PI / 180) * site.contStrength);
-
+    // Movement Loop
+    for (let i=0; i < site.navElements.length; i++){
+        site.navElements[i].offsetX = (Math.cos(site.navElements[i].angle * Math.PI / 180) * site.navElements[i].strength);
+        site.navElements[i].offsetY = (Math.sin(site.navElements[i].angle * Math.PI / 180) * site.navElements[i].strength);
+    }
 }
 
 // Apply the calulcations to the elements on the page.
 function applyMoveToElements(site){
-    site.home.style.left = site.homeOffX + "px";
-    site.home.style.top  = site.homeOffY + "px";
-
-    site.project.style.left = site.projOffX + "px";
-    site.project.style.top  = site.projOffY + "px";
-
-    site.education.style.left = site.eduOffX + "px";
-    site.education.style.top  = site.eduOffY + "px";
-
-    site.contact.style.left = site.contOffX + "px";
-    site.contact.style.top  = site.contOffY + "px";
+    for (let i=0; i < site.navElements.length; i++){
+        site.navElements[i].element.style.left = site.navElements[i].offsetX + "px";
+        site.navElements[i].element.style.top  = site.navElements[i].offsetY + "px";
+    }  
 }
 
 
 // Update game function.
 function update(){
-    //move(site);
-    //applyMoveToElements(site);
+    move(site);
+    applyMoveToElements(site);
 }
 
-console.log(site.navElements.length);
-console.log(site.navElements[0].id)
-console.log(site.navElements[2].rect.height)
-
 // Framerate
-setInterval(update, 4);
+setInterval(update, 40);
