@@ -58,9 +58,17 @@ document.addEventListener('mousemove', function(event) {
 });
 
 function calculateStrengths(site){
-    var base = -10;
+    var base = 10;
+    var upperLimit = 300;
+
+    if (site.homeDistance >= upperLimit){
+        multiplier = 1;
+    }
+    else{
+        multiplier = (site.homeDistance / upperLimit);
+    }
     
-    site.homeStrength = base;
+    site.homeStrength = base * multiplier;
     site.projStrength = base;
     site.eduStrength = base;
     site.contStrength = base;
@@ -124,4 +132,4 @@ function update(){
 }
 
 // Framerate
-setInterval(update, 50);
+setInterval(update, 4);
