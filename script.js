@@ -6,9 +6,24 @@ class NavItem{
         this.offsetX = 0;
         this.offsetY = 0;
         this.rect = this.element.getBoundingClientRect();
-        this.strength = 30;
+        this.style = window.getComputedStyle(this.element);
+
+        // Movement
+        this.strength;
+        this.baseStrength = 23;
+        this.moveRangeUpperBound = 600;
         this.angle = 0;
         this.distance = 0;
+
+        // Colour Changes
+        // converts color to usable values.
+        this.baseColour = this.style.color.match(/\d+/g).map(Number);
+        this.targetColour = [...this.baseColour];   // shallow copy
+        this.colourRangeUpperBound = 300;
+
+        // Abilities
+        this.doesMove = true;
+        this.doesChangeColour = true;
     }
 }
 
@@ -28,10 +43,24 @@ class Logic{
         for (let i=0; i < navIDs.length; i++){
             this.navElements.push(new NavItem(navIDs[i]));
         }
+
+        // Assign Custom Abilities
+        for (let i=0; i < this.navElements.length; i++){
+            if (this.navElements[i].id == "logoNav"){
+                this.navElements[i].doesChangeColour = true;
+                this.navElements[i].doesMove = false;
+            }
+        }
+
     }
 }
 
 var site = new Logic();
+changeTargetColours(site, "homeNav", 255, 0, 0);
+changeTargetColours(site, "projectsNav", 255, 0, 0);
+changeTargetColours(site, "educationNav", 255, 0, 0);
+changeTargetColours(site, "contactNav", 255, 0, 0);
+changeTargetColours(site, "logoNav", 255, 0, 0);
 
 // Handle Mouse Tracking
 document.addEventListener('mousemove', function(event) {
@@ -39,10 +68,61 @@ document.addEventListener('mousemove', function(event) {
     site.mousePosY = event.clientY;
 });
 
-function calculateStrengths(site){
-    const base = 15;
-    const upperLimit = 500;
+function updateBaseColour(site, id){
+    for (let i=0; i < site.navElements.length; i++){
+        if (site.navElements[i].doesChangeColour == true){
+            if (site.navElements[i].id == id){
+                site.navElements[i].baseColour = this.style.color.match(/\d+/g).map(Number);
+            }
+        }
+    }
+}
 
+function changeTargetColours(site, id, r, g, b){
+    for (let i=0; i < site.navElements.length; i++){
+        if (site.navElements[i].doesChangeColour == true){
+            if (site.navElements[i].id == id){
+                site.navElements[i].targetColour[0] = r;
+                site.navElements[i].targetColour[1] = g;
+                site.navElements[i].targetColour[2] = b;
+            }
+        }
+    }
+}
+
+function getCurrentColour(navElement){
+    var colour = navElement.style.color.match(/\d+/g).map(Number);
+    return colour;
+}
+
+function distanceColour(site){
+    for (let i=0; i < site.navElements.length; i++){
+        if (site.navElements[i].doesChangeColour == true){
+
+            // Clamped Value
+            if (site.navElements[i].distance >= site.navElements[i].colourRangeUpperBound){
+                multiplier = 1;
+            }
+            // Get Percentage
+            else {
+                multiplier = (site.navElements[i].distance / site.navElements[i].colourRangeUpperBound);
+            }
+
+            // Colour calculations
+            differences = [];
+            finalColour = [];
+            for (let j=0; j < 3; j++){
+                differences[j] = site.navElements[i].targetColour[j] - site.navElements[i].baseColour[j];
+                finalColour[j] = site.navElements[i].targetColour[j] - (differences[j] * multiplier);
+            }
+
+            site.navElements[i].element.style.color = `rgb(${finalColour[0]}, ${finalColour[1]}, ${finalColour[2]})`;
+    
+        }
+    }
+}
+
+function calculateStrengths(site){
     for (let i=0; i < site.navElements.length; i++){
         
         // Clamp strength when too far away.
@@ -63,16 +143,39 @@ function calculateStrengths(site){
 
 function calculateMoveDistances(site){
     for (let i=0; i < site.navElements.length; i++){
-        // Angle
-        site.navElements[i].angle = 
-        (Math.atan2((site.navElements[i].rect.top + (site.navElements[i].rect.height / 2)) - site.mousePosY,
-        (site.navElements[i].rect.left + (site.navElements[i].rect.width / 2)) - site.mousePosX) * 180) / Math.PI;
-    
-        // Distance
-        site.navElements[i].distance = 
-        Math.sqrt((site.mousePosX - (site.navElements[i].rect.left + (site.navElements[i].rect.width / 2))) ** 2 
-        + (site.mousePosY - (site.navElements[i].rect.top + (site.navElements[i].rect.height / 2))) ** 2);
+        if (site.navElements[i].doesMove == true){
+            // Angle
+            site.navElements[i].angle = 
+            (Math.atan2((site.navElements[i].rect.top + (site.navElements[i].rect.height / 2)) - site.mousePosY,
+            (site.navElements[i].rect.left + (site.navElements[i].rect.width / 2)) - site.mousePosX) * 180) / Math.PI;
+        
+            
+        }
     }
+}
+
+function recalculateElementAttributes(site){
+    for (let i=0; i < site.navElements.length; i++){
+        
+        // If moves
+        if (site.navElements[i].doesMove == true){
+        
+        }
+
+        // If changes Colour
+        if (site.navElements[i].doesMove == true){
+        
+        }
+
+        // Always
+    }
+}
+
+function calculateElementDistance(site, element){
+    // Distance
+    element.distance = 
+    Math.sqrt((site.mousePosX - (element.rect.left + (element.rect.width / 2))) ** 2 
+    + (site.mousePosY - (element.rect.top + (element.rect.height / 2))) ** 2);
 }
 
 // Actually calculate the movements of the text.
@@ -103,4 +206,4 @@ function update(){
 }
 
 // Framerate
-setInterval(update, 40);
+setInterval(update, 0);
