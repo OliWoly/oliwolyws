@@ -39,7 +39,7 @@ class Logic{
 
 
         this.navElements = [];
-        const navIDs = ["homeNav", "projectsNav", "educationNav", "contactNav"];
+        const navIDs = ["homeNav", "projectsNav", "educationNav", "contactNav", "logoNav"];
         for (let i=0; i < navIDs.length; i++){
             this.navElements.push(new NavItem(navIDs[i]));
         }
@@ -48,7 +48,7 @@ class Logic{
         for (let i=0; i < this.navElements.length; i++){
             if (this.navElements[i].id == "logoNav"){
                 this.navElements[i].doesChangeColour = true;
-                this.navElements[i].doesMove = true;
+                this.navElements[i].doesMove = false;
             }
         }
 
