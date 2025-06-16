@@ -56,6 +56,10 @@ class Logic{
 }
 
 var site = new Logic();
+setTargetColour(site, "homeNav", 255, 0, 0);
+setTargetColour(site, "projectsNav", 255, 0, 0);
+setTargetColour(site, "educationNav", 255, 0, 0);
+setTargetColour(site, "contactNav", 255, 0, 0);
 setTargetColour(site, "logoNav", 255, 0, 0);
 
 // Handle Mouse Tracking
@@ -117,30 +121,24 @@ function recalculateElementAttributes(site){
 
 
 function calculateElementColourChange(element){
-    for (let i=0; i < site.navElements.length; i++){
-        if (element.doesChangeColour == true){
-
-            // Clamped Value
-            if (element.distance >= element.colourRangeUpperBound){
-                multiplier = 1;
-            }
-            // Get Percentage
-            else {
-                multiplier = (element.distance / element.colourRangeUpperBound);
-            }
-
-            // Colour calculations
-            differences = [];
-            finalColour = [];
-            for (let j=0; j < 3; j++){
-                differences[j] = element.targetColour[j] - element.baseColour[j];
-                finalColour[j] = element.targetColour[j] - (differences[j] * multiplier);
-            }
-
-            element.element.style.color = `rgb(${finalColour[0]}, ${finalColour[1]}, ${finalColour[2]})`;
-    
-        }
+    // Clamped Value
+    if (element.distance >= element.colourRangeUpperBound){
+        multiplier = 1;
     }
+    // Get Percentage
+    else {
+        multiplier = (element.distance / element.colourRangeUpperBound);
+    }
+
+    // Colour calculations
+    differences = [];
+    finalColour = [];
+    for (let j=0; j < 3; j++){
+        differences[j] = element.targetColour[j] - element.baseColour[j];
+        finalColour[j] = element.targetColour[j] - (differences[j] * multiplier);
+    }
+
+    element.element.style.color = `rgb(${finalColour[0]}, ${finalColour[1]}, ${finalColour[2]})`;
 }
 
 function calculateElementStrength(element){
