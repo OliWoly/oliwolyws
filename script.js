@@ -1,18 +1,17 @@
 // Global Variables
 class NavItem{
     constructor(ID){
-        // Attributes
         this.id = ID;
         this.element = document.getElementById(ID);
         this.offsetX = 0;
         this.offsetY = 0;
-
-        // Element Attributes
         this.rect = this.element.getBoundingClientRect();
         this.style = window.getComputedStyle(this.element);
 
         // Movement
-        this.strength = 30;
+        this.strength;
+        this.baseStrength = 23;
+        this.moveRangeUpperBound = 600;
         this.angle = 0;
         this.distance = 0;
 
@@ -20,10 +19,11 @@ class NavItem{
         // converts color to usable values.
         this.baseColour = this.style.color.match(/\d+/g).map(Number);
         this.targetColour = [...this.baseColour];   // shallow copy
+        this.colourRangeUpperBound = 300;
 
         // Abilities
         this.doesMove = true;
-        this.doesChangeColour = false;
+        this.doesChangeColour = true;
     }
 }
 
@@ -56,7 +56,7 @@ class Logic{
 }
 
 var site = new Logic();
-changeTargetColours(site, "logoNav", 255, 0, 0);
+setTargetColour(site, "logoNav", 255, 0, 0);
 
 // Handle Mouse Tracking
 document.addEventListener('mousemove', function(event) {
@@ -64,7 +64,7 @@ document.addEventListener('mousemove', function(event) {
     site.mousePosY = event.clientY;
 });
 
-function updateBaseColour(site, id){
+function setBaseColour(site, id){
     for (let i=0; i < site.navElements.length; i++){
         if (site.navElements[i].doesChangeColour == true){
             if (site.navElements[i].id == id){
@@ -74,7 +74,7 @@ function updateBaseColour(site, id){
     }
 }
 
-function changeTargetColours(site, id, r, g, b){
+function setTargetColour(site, id, r, g, b){
     for (let i=0; i < site.navElements.length; i++){
         if (site.navElements[i].doesChangeColour == true){
             if (site.navElements[i].id == id){
@@ -86,82 +86,103 @@ function changeTargetColours(site, id, r, g, b){
     }
 }
 
-function getCurrentColour(navElement){
-    var colour = navElement.style.color.match(/\d+/g).map(Number);
+function getCurrentColour(element){
+    var colour = element.style.color.match(/\d+/g).map(Number);
     return colour;
 }
 
-function distanceColour(site){
+
+
+
+
+
+
+function recalculateElementAttributes(site){
     for (let i=0; i < site.navElements.length; i++){
+        // If moves
+        if (site.navElements[i].doesMove == true){
+            calculateElementStrength(site.navElements[i]);
+        }
+
+        // If changes Colour
         if (site.navElements[i].doesChangeColour == true){
-            const upperLimit = 300;
-            let multiplier = 1;
+            calculateElementColourChange(site.navElements[i])
+        }
+
+        // Always
+        calculateElementDistance(site, site.navElements[i]);
+        calculateElementAngle(site, site.navElements[i]);
+    }
+}
+
+
+function calculateElementColourChange(element){
+    for (let i=0; i < site.navElements.length; i++){
+        if (element.doesChangeColour == true){
 
             // Clamped Value
-            if (site.navElements[i].distance >= upperLimit){
+            if (element.distance >= element.colourRangeUpperBound){
                 multiplier = 1;
             }
             // Get Percentage
             else {
-                multiplier = (site.navElements[i].distance / upperLimit);
+                multiplier = (element.distance / element.colourRangeUpperBound);
             }
 
             // Colour calculations
             differences = [];
             finalColour = [];
             for (let j=0; j < 3; j++){
-                differences[j] = site.navElements[i].targetColour[j] - site.navElements[i].baseColour[j];
-                finalColour[j] = site.navElements[i].targetColour[j] - (differences[j] * multiplier);
+                differences[j] = element.targetColour[j] - element.baseColour[j];
+                finalColour[j] = element.targetColour[j] - (differences[j] * multiplier);
             }
 
-            site.navElements[i].element.style.color = `rgb(${finalColour[0]}, ${finalColour[1]}, ${finalColour[2]})`;
+            element.element.style.color = `rgb(${finalColour[0]}, ${finalColour[1]}, ${finalColour[2]})`;
     
         }
     }
 }
 
-function calculateStrengths(site){
-    const base = 15;
-    const upperLimit = 500;
-
-    for (let i=0; i < site.navElements.length; i++){
-        if (site.navElements[i].doesMove == true){
-            // Clamp strength when too far away.
-            if (site.navElements[i].distance >= upperLimit){
-                multiplier = 1;
-            }
-
-            // Begin Fading under upper bound.
-            else {
-                multiplier = (site.navElements[i].distance / upperLimit);
-            }
-            
-            // Apply calculations
-            site.navElements[i].strength = base * multiplier;
-        }
-    }  
-}
-
-function calculateMoveDistances(site){
-    for (let i=0; i < site.navElements.length; i++){
-        if (site.navElements[i].doesMove == true){
-            // Angle
-            site.navElements[i].angle = 
-            (Math.atan2((site.navElements[i].rect.top + (site.navElements[i].rect.height / 2)) - site.mousePosY,
-            (site.navElements[i].rect.left + (site.navElements[i].rect.width / 2)) - site.mousePosX) * 180) / Math.PI;
-        
-            // Distance
-            site.navElements[i].distance = 
-            Math.sqrt((site.mousePosX - (site.navElements[i].rect.left + (site.navElements[i].rect.width / 2))) ** 2 
-            + (site.mousePosY - (site.navElements[i].rect.top + (site.navElements[i].rect.height / 2))) ** 2);
-        }
+function calculateElementStrength(element){
+    // Clamp strength when too far away.
+    if (element.distance >= element.moveRangeUpperBound){
+        multiplier = 1;
     }
+
+    // Begin Fading under upper bound.
+    else {
+        multiplier = (element.distance / element.moveRangeUpperBound);
+    }
+        
+    // Apply calculations
+    element.strength = element.baseStrength * multiplier;
 }
+
+function calculateElementDistance(site, element){
+    // Distance
+    element.distance = 
+    Math.sqrt((site.mousePosX - (element.rect.left + (element.rect.width / 2))) ** 2 
+    + (site.mousePosY - (element.rect.top + (element.rect.height / 2))) ** 2);
+}
+
+function calculateElementAngle(site, element){
+    // Angle
+    element.angle = 
+    (Math.atan2((element.rect.top + (element.rect.height / 2)) - site.mousePosY,
+    (element.rect.left + (element.rect.width / 2)) - site.mousePosX) * 180) / Math.PI;
+}
+
+
+
+
+
+
+
+
 
 // Actually calculate the movements of the text.
 function move(site){
-    calculateMoveDistances(site);
-    calculateStrengths(site);
+    recalculateElementAttributes(site);
     
     // Movement Loop
     for (let i=0; i < site.navElements.length; i++){
@@ -171,7 +192,6 @@ function move(site){
         }
     }
 }
-
 // Apply the calulcations to the elements on the page.
 function applyMoveToElements(site){
     for (let i=0; i < site.navElements.length; i++){
@@ -189,7 +209,6 @@ function apply(site){
 function update(){
     move(site);
     apply(site);
-    distanceColour(site);
 }
 
 // Framerate
