@@ -122,52 +122,38 @@ function distanceColour(site){
     }
 }
 
-function calculateStrengths(site){
-    for (let i=0; i < site.navElements.length; i++){
-        
-        // Clamp strength when too far away.
-        if (site.navElements[i].distance >= upperLimit){
-            multiplier = 1;
-        }
-
-        // Begin Fading under upper bound.
-        else {
-            multiplier = (site.navElements[i].distance / upperLimit);
-        }
-        
-        // Apply calculations
-        site.navElements[i].strength = base * multiplier;
-    }  
-}
-
-
-function calculateMoveDistances(site){
-    for (let i=0; i < site.navElements.length; i++){
-        if (site.navElements[i].doesMove == true){
-            // Angle
-            site.navElements[i].angle = 
-            (Math.atan2((site.navElements[i].rect.top + (site.navElements[i].rect.height / 2)) - site.mousePosY,
-            (site.navElements[i].rect.left + (site.navElements[i].rect.width / 2)) - site.mousePosX) * 180) / Math.PI;
-        
-            
-        }
+function calculateElementStrength(element){
+    // Clamp strength when too far away.
+    if (element.distance >= upperLimit){
+        multiplier = 1;
     }
+
+    // Begin Fading under upper bound.
+    else {
+        multiplier = (element.distance / upperLimit);
+    }
+        
+    // Apply calculations
+    element.strength = base * multiplier;
 }
 
 function recalculateElementAttributes(site){
     for (let i=0; i < site.navElements.length; i++){
+
         
         // If moves
         if (site.navElements[i].doesMove == true){
-        
+            calculateElementStrength(site.navElements[i]);
         }
 
         // If changes Colour
-        if (site.navElements[i].doesMove == true){
+        if (site.navElements[i].doesChangeColour == true){
         
         }
 
         // Always
+        calculateElementDistance(site, site.navElements[i]);
+        calculateElementAngle(site, site.navElements[i]);
     }
 }
 
@@ -178,10 +164,16 @@ function calculateElementDistance(site, element){
     + (site.mousePosY - (element.rect.top + (element.rect.height / 2))) ** 2);
 }
 
+function calculateElementAngle(site, element){
+    // Angle
+    element.angle = 
+    (Math.atan2((element.rect.top + (element.rect.height / 2)) - site.mousePosY,
+    (element.rect.left + (element.rect.width / 2)) - site.mousePosX) * 180) / Math.PI;
+}
+
 // Actually calculate the movements of the text.
 function move(site){
-    calculateMoveDistances(site);
-    calculateStrengths(site);
+    recalculateElementAttributes(site);
     
     // Movement Loop
     for (let i=0; i < site.navElements.length; i++){
