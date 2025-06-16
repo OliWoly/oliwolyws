@@ -48,7 +48,7 @@ class Logic{
         for (let i=0; i < this.navElements.length; i++){
             if (this.navElements[i].id == "logoNav"){
                 this.navElements[i].doesChangeColour = true;
-                this.navElements[i].doesMove = false;
+                this.navElements[i].doesMove = true;
             }
         }
 
@@ -118,6 +118,7 @@ function recalculateElementAttributes(site){
         calculateElementAngle(site, site.navElements[i]);
     }
 }
+
 
 function calculateElementColourChange(element){
     for (let i=0; i < site.navElements.length; i++){

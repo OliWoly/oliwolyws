@@ -4,13 +4,16 @@
 }
 
 * {
+    margin: 0;
+    padding: 0;
+
     font-family: Proto;
     background-color: var(--bgColour);
 }
 
 :root {
     --bgColour: #FFFFFF;
-    --bgColourHeader: #FAF0E9;
+    --bgColourHeader: #FFFFFF;
     --txtColour: #1D1D1D;
     --txtColourLink: #1D1D1D;
 }
@@ -57,14 +60,19 @@ h1 {
     padding-right: 10%;
     padding-left: 10%;
     background-color: var(--bgColourHeader);
-    color:var(--txtColour)
+    color:var(--txtColour);
+
+    box-shadow:10px 10px black;
 }
 
 .logoHeader {
+    display: flex;
     font-size: 3em;
     font-style: italic;
     text-decoration: underline;
     background-color: var(--bgColourHeader);
+    justify-content: center;
+    align-items: center;
 }
 
 .logoHeader p {
@@ -102,19 +110,11 @@ nav {
     height: 2em;
 }
 
-#homeNav{
+#homeNav, #projectsNav, #educationNav, #contactNav{
     position:relative;
-    top:0em;
 }
-#projectsNav{
+
+#logoNav{
     position:relative;
-    top:0em;
-}
-#educationNav{
-    position:relative;
-    top:0em;
-}
-#contactNav{
-    position:relative;
-    top:0em;
+    background-color: var(--bgColourHeader);
 }
