@@ -39,13 +39,17 @@ a:active {
 }
 
 main {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
     max-width: 75ch;       
-    margin: 0 auto;        
+    margin: 1em auto;        
     padding: 0 1em;        
 }
 
 h1 {
     font-size: 3em;
+    margin-bottom: 5%;
 }
 
 
@@ -61,8 +65,6 @@ h1 {
     padding-left: 10%;
     background-color: var(--bgColourHeader);
     color:var(--txtColour);
-
-    box-shadow:10px 10px black;
 }
 
 .logoHeader {

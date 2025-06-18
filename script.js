@@ -116,7 +116,7 @@ class Logic{
                 this.navElements[i].setTargetColour(255, 0, 0);
             }
 
-            if (this.navElements[i].id == "projectNav"){
+            if (this.navElements[i].id == "projectsNav"){
                 this.navElements[i].setTargetColour(255, 0, 0);
             }
 
@@ -264,6 +264,8 @@ function apply(site){
 }
 
 site.navElements[0].printDetails();
+site.navElements[1].printDetails();
+site.navElements[2].printDetails();
 // Update game function.
 function update(){
     site.setMouseMoveAge();
