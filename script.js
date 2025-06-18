@@ -101,6 +101,8 @@ class Logic{
             this.navElements.push(new NavItem(navElementIDs[i]));
         }
 
+        this.setNavElementAttributes();
+
     }
 
     // Class Methods
@@ -139,7 +141,6 @@ class Logic{
 
 // Create the site object.
 var site = new Logic();
-site.setNavElementAttributes();
 
 // Handle Mouse Tracking
 document.addEventListener('mousemove', function(event) {
