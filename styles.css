@@ -61,8 +61,6 @@ h1 {
     padding-left: 10%;
     background-color: var(--bgColourHeader);
     color:var(--txtColour);
-
-    box-shadow:10px 10px black;
 }
 
 .logoHeader {
@@ -102,12 +100,6 @@ nav {
 
 .navigationBarSub a {
     background-color: var(--bgColourHeader);
-}
-
-.navGradient {
-    background-image: linear-gradient(180deg, var(--bgColourHeader), var(--bgColour));
-    width: 100%;
-    height: 2em;
 }
 
 #homeNav, #projectsNav, #educationNav, #contactNav{

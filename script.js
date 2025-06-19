@@ -33,23 +33,22 @@ class NavItem{
     }
     
     // Class Methods
+    // Getters
+    printDetails() {
+        const output = 
+            `id: ${this.id}
+            offsetX: ${this.offsetX}
+            offsetY: ${this.offsetY}
+            strength: ${this.strength}
+            angle: ${this.angle}
+            distance: ${this.distance}
+            baseColour: ${this.baseColour}
+            targetColour: ${this.targetColour}
+            doesMove: ${this.doesMove}
+            doesChangeColour: ${this.doesChangeColour}`;
 
-printDetails() {
-    const output = 
-        `id: ${this.id}
-        offsetX: ${this.offsetX}
-        offsetY: ${this.offsetY}
-        strength: ${this.strength}
-        angle: ${this.angle}
-        distance: ${this.distance}
-        baseColour: ${this.baseColour}
-        targetColour: ${this.targetColour}
-        doesMove: ${this.doesMove}
-        doesChangeColour: ${this.doesChangeColour}`;
-
-    console.log(output);
-}
-
+        console.log(output);
+    }
 
     getCurrentColour(){
         var colour = this.style.color.match(/\d+/g).map(Number);
@@ -95,6 +94,7 @@ class Logic{
         this.mousePosY = 0;
         this.timeOfLastMouseMovement = new Date();
         this.mouseMoveAge = 0;
+        this.mouseAgeResetTime = 1000;
 
         this.navElements = [];
         for (let i=0; i < navElementIDs.length; i++){
@@ -116,7 +116,7 @@ class Logic{
                 this.navElements[i].setTargetColour(255, 0, 0);
             }
 
-            if (this.navElements[i].id == "projectNav"){
+            if (this.navElements[i].id == "projectsNav"){
                 this.navElements[i].setTargetColour(255, 0, 0);
             }
 
@@ -147,6 +147,15 @@ document.addEventListener('mousemove', function(event) {
     site.mousePosY = event.clientY;
     site.timeOfLastMouseMovement = new Date();
 });
+
+function floatElementsBack(site){
+    if (site.mouseMoveAge > site.mouseAgeResetTime){
+        for (let i=0; i < site.navElements.length; i++){
+            site.navElements[i].offsetX *= 0.75;
+            site.navElements[i].offsetY *= 0.75;
+        }
+    }
+}
 
 
 
@@ -241,13 +250,14 @@ function calculateElementAngle(site, element){
 
 // Actually calculate the movements of the text.
 function move(site){
-    recalculateElementAttributes(site);
-    
-    // Movement Loop
-    for (let i=0; i < site.navElements.length; i++){
-        if (site.navElements[i].doesMove == true){
-            site.navElements[i].offsetX = (Math.cos(site.navElements[i].angle * Math.PI / 180) * site.navElements[i].strength) * site.navElements[i].horizontalStrengthMultiplier;
-            site.navElements[i].offsetY = (Math.sin(site.navElements[i].angle * Math.PI / 180) * site.navElements[i].strength) * site.navElements[i].verticalStrengthMultiplier;
+    if (site.mouseMoveAge < site.mouseAgeResetTime){
+        recalculateElementAttributes(site);
+        // Movement Loop
+        for (let i=0; i < site.navElements.length; i++){
+            if (site.navElements[i].doesMove == true){
+                site.navElements[i].offsetX = (Math.cos(site.navElements[i].angle * Math.PI / 180) * site.navElements[i].strength) * site.navElements[i].horizontalStrengthMultiplier;
+                site.navElements[i].offsetY = (Math.sin(site.navElements[i].angle * Math.PI / 180) * site.navElements[i].strength) * site.navElements[i].verticalStrengthMultiplier;
+            }
         }
     }
 }
@@ -268,6 +278,7 @@ site.navElements[0].printDetails();
 function update(){
     site.setMouseMoveAge();
     move(site);
+    floatElementsBack(site)
     apply(site);
 }
 
