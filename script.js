@@ -100,7 +100,6 @@ class Logic{
         for (let i=0; i < navElementIDs.length; i++){
             this.navElements.push(new NavItem(navElementIDs[i]));
         }
-
     }
 
     // Class Methods
@@ -135,11 +134,17 @@ class Logic{
         }
     }
 
-}
+    floatElementsBack(){
+        if (this.mouseMoveAge > this.mouseAgeResetTime){
+            for (let i=0; i < this.navElements.length; i++){
+                this.navElements[i].offsetX *= 0.75;
+                this.navElements[i].offsetY *= 0.75;
+    
+            }
+        }
+    }
 
-// Create the site object.
-var site = new Logic();
-site.setNavElementAttributes();
+}
 
 // Handle Mouse Tracking
 document.addEventListener('mousemove', function(event) {
@@ -148,14 +153,6 @@ document.addEventListener('mousemove', function(event) {
     site.timeOfLastMouseMovement = new Date();
 });
 
-function floatElementsBack(site){
-    if (site.mouseMoveAge > site.mouseAgeResetTime){
-        for (let i=0; i < site.navElements.length; i++){
-            site.navElements[i].offsetX *= 0.75;
-            site.navElements[i].offsetY *= 0.75;
-        }
-    }
-}
 
 
 
@@ -273,14 +270,25 @@ function apply(site){
     applyMoveToElements(site);
 }
 
-site.navElements[0].printDetails();
 // Update game function.
 function update(){
     site.setMouseMoveAge();
     move(site);
-    floatElementsBack(site)
+    site.floatElementsBack();
     apply(site);
 }
 
-// Framerate
-setInterval(update, 40);
+function main(){
+    // Controls Framerate
+    // start the main loop.
+    setInterval(update, 40);
+}
+
+
+
+
+// Create the site object.
+var site = new Logic();
+site.setNavElementAttributes();
+// Main call.
+main();
