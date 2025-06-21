@@ -144,6 +144,28 @@ class Logic{
         }
     }
 
+    // Actually calculate the movements of the text.
+    move(){
+        if (this.mouseMoveAge < this.mouseAgeResetTime){
+            recalculateElementAttributes(this);
+            // Movement Loop
+            for (let i=0; i < this.navElements.length; i++){
+                if (this.navElements[i].doesMove == true){
+                    this.navElements[i].offsetX = (Math.cos(this.navElements[i].angle * Math.PI / 180) * this.navElements[i].strength) * this.navElements[i].horizontalStrengthMultiplier;
+                    this.navElements[i].offsetY = (Math.sin(this.navElements[i].angle * Math.PI / 180) * this.navElements[i].strength) * this.navElements[i].verticalStrengthMultiplier;
+                }
+            }
+        }
+    }
+
+    // Apply the calulcations to the elements on the page.
+    applyMoveToElements(){
+        for (let i=0; i < this.navElements.length; i++){
+            this.navElements[i].element.style.left = this.navElements[i].offsetX + "px";
+            this.navElements[i].element.style.top  = this.navElements[i].offsetY + "px";
+        }  
+    }
+
 }
 
 // Handle Mouse Tracking
@@ -245,35 +267,16 @@ function calculateElementAngle(site, element){
 
 
 
-// Actually calculate the movements of the text.
-function move(site){
-    if (site.mouseMoveAge < site.mouseAgeResetTime){
-        recalculateElementAttributes(site);
-        // Movement Loop
-        for (let i=0; i < site.navElements.length; i++){
-            if (site.navElements[i].doesMove == true){
-                site.navElements[i].offsetX = (Math.cos(site.navElements[i].angle * Math.PI / 180) * site.navElements[i].strength) * site.navElements[i].horizontalStrengthMultiplier;
-                site.navElements[i].offsetY = (Math.sin(site.navElements[i].angle * Math.PI / 180) * site.navElements[i].strength) * site.navElements[i].verticalStrengthMultiplier;
-            }
-        }
-    }
-}
-// Apply the calulcations to the elements on the page.
-function applyMoveToElements(site){
-    for (let i=0; i < site.navElements.length; i++){
-        site.navElements[i].element.style.left = site.navElements[i].offsetX + "px";
-        site.navElements[i].element.style.top  = site.navElements[i].offsetY + "px";
-    }  
-}
+
 
 function apply(site){
-    applyMoveToElements(site);
+    site.applyMoveToElements();
 }
 
 // Update game function.
 function update(){
     site.setMouseMoveAge();
-    move(site);
+    site.move();
     site.floatElementsBack();
     apply(site);
 }
